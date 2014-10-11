@@ -1,0 +1,15 @@
+{
+    "author": "Epsirom <chenhuarongzp@gmail.com>",
+    "name": "AuthTHU",
+    "version": "0.0.1",
+    "private": true,
+    "scripts": {
+        "start": "bash compile.sh; node app"
+    },
+    "dependencies": {
+        "superagent": "*",
+        "iconv-lite": "*"
+    },
+    "port": 9003,
+    "debug": true
+}
