@@ -2,15 +2,47 @@ superagent = require "superagent"
 iconv = require "iconv-lite"
 
 logger = require "./logger.js"
+db = require "./db.js"
+rsa = require "../rsa/RSA.js"
+
+RSAkey = new rsa.RSA("10001", "1560391ac82b001c5321efa005e2f6350381ac58589a65b65f41b130a4f9d1f00530a0e435966b4d552fb7141217b95b0c166b13c94579291eeffa2e2521680328924d9af73ea31158a70c9d7855d278e4cfeea047eac06a74c8f3af36eeb580ea108a0f3906ebf4afd5d7a2f6190b2d46e31ac8853b8f8897384fb5289d6d89", "89323ab0fba8422ba79b2ef4fb4948ee5158f927f63daebd35c7669fc1af6501ceed5fd13ac1d236d144d39808eb8da53aa0af26b17befd1abd6cfb1dcfba937438e4e95cd061e2ba372d422edbb72979f4ccd32f75503ad70769e299a4143a428380a2bd43c30b0c37fda51d6ee7adbfec1a9d0ad1891e1ae292d8fb992821b")
 
 stableAuth = (data, callback) ->
+  if typeof(rsa.secret) isnt "string"
+    callback
+      code: -2
+      message: "Wrong format."
+    return
+
+  decrypted = rsa.decrypt(RSAkey, rsa.secret).split("|")
+  if decrypted.length < 3
+    callback
+      code: -2
+      message: "Wrong format."
+    return
+
+  timestamp = parseInt(decrypted[0])
+  username = decrypted[1]
+  password = decrypted[2]
+  if isNaN(timestamp)
+    callback
+      code: -2
+      message: "Wrong format."
+    return
+
+  if not db.applyLogin(username, timestamp)
+    callback
+      code: -3
+      message: "Out of date."
+    return
+
   agent = superagent.agent()
   agent
     .post("https://learn.tsinghua.edu.cn/MultiLanguage/lesson/teacher/loginteacher.jsp")
     .type("form")
     .send(
-      userid: data.username
-      userpass: data.password
+      userid: username
+      userpass: password
       submit1: "登录"
     ).end((res) ->
       if res.statusCode is 200
@@ -31,6 +63,7 @@ stableAuth = (data, callback) ->
               else
                 logger.updateUserinfoError data.username, res
               callback rtn
+              return
             )
 
         else
@@ -39,11 +72,13 @@ stableAuth = (data, callback) ->
             message: "Wrong username or password."
           logger.authFailed data.username, rtn
           callback rtn
+          return
       else
         logger.authError data.username, res
         callback
           code: -1
           message: "Unknown error."
+        return
     )
   updateDataByUserinfoFromStable = (data, html) ->
     data["ID"] = /编号<\/td>\s*<td\s[^>]*>([^<]*)<\/td>/.exec(html)[1]

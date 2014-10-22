@@ -10,7 +10,13 @@ httpEntry = (req, res) ->
   try
     req_url = url.parse req.url
     pathname = req_url.pathname
-    auth_method = if pathname in ["/", "/stable"] then auth.stableAuth else if pathname in ["/safe"] then auth.safeAuth
+    if pathname == "/time" and req.method is "GET"
+      logger.requestReceived req, true
+      res.writeHead 200
+      res.write(new Date().getTime().toString())
+      res.end()
+      return
+    auth_method = if pathname in ["/"] then auth.stableAuth #else if pathname in ["/safe"] then auth.safeAuth
     if not auth_method or req.method isnt "POST"
       logger.requestReceived req, false
       res.writeHead 404
