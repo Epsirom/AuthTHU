@@ -29,5 +29,5 @@ node_modules
 
 .idea
 
-*.js
-*.js.map
+modules/*.js
+modules/*.js.map
