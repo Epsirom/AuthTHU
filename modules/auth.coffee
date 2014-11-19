@@ -51,8 +51,8 @@ stableAuth = (data, callback) ->
             code: 0
             message: "Success"
             data:
-              type: getUsernameType data.username
-          logger.authSuccess data.username, rtn
+              type: getUsernameType username
+          logger.authSuccess username, rtn
 
           agent.saveCookies(res)
           agent
@@ -61,7 +61,7 @@ stableAuth = (data, callback) ->
               if res.statusCode is 200
                 updateDataByUserinfoFromStable(rtn.data, res.text)
               else
-                logger.updateUserinfoError data.username, res
+                logger.updateUserinfoError username, res
               callback rtn
               return
             )
@@ -70,11 +70,11 @@ stableAuth = (data, callback) ->
           rtn =
             code: 1
             message: "Wrong username or password."
-          logger.authFailed data.username, rtn
+          logger.authFailed username, rtn
           callback rtn
           return
       else
-        logger.authError data.username, res
+        logger.authError username, res
         callback
           code: -1
           message: "Unknown error."
