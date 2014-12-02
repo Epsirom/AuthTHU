@@ -96,12 +96,12 @@ stableAuth = (data, callback) ->
     data["name"] = exec_reg(/姓名<\/td>[^<]*<td\s[^>]*>([^<]*)<\/td>/, 1)
     data["gender"] = get_input('gender')
     data["usertype"] = get_input('user_type')
-    data["email"] = get_input('email')
-    data["phone"] = get_input('phone')
-    data["address"] = get_input('address')
+    #data["email"] = get_input('email')
+    #data["phone"] = get_input('phone')
+    #data["address"] = get_input('address')
     data["title"] = get_input('title')
-    data["zip_code"] = get_input('zip_code')
-    data["work_place"] = get_input('work_place')
+    #data["zip_code"] = get_input('zip_code')
+    #data["work_place"] = get_input('work_place')
     data["folk"] = get_input('folk')
 
 safeAuth = (data, callback) ->
