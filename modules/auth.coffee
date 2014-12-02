@@ -80,10 +80,29 @@ stableAuth = (data, callback) ->
           message: "Unknown error."
         return
     )
+
   updateDataByUserinfoFromStable = (data, html) ->
-    data["ID"] = /编号<\/td>\s*<td\s[^>]*>([^<]*)<\/td>/.exec(html)[1]
-    data["name"] = /姓名<\/td>\s*<td\s[^>]*>([^<]*)<\/td>/.exec(html)[1]
-    data["usertype"] = /name=user_type\s*value="([\u4e00-\u9fa5]*)">/.exec(html)[1]
+
+    exec_reg = (reg, idx) ->
+      result = reg.exec(html)
+      return if result and result.length > 1 then result[idx].trim() else null
+
+    get_input = (name) ->
+      # for only chinese:
+      # exec_reg(new RegExp("name=#{name}[^v]*value=\"([\u4e00-\u9fa5]*)", 1)
+      exec_reg(new RegExp("name=#{name}[^v]*value=\"([^\"]*)\""), 1)
+
+    data["ID"] = exec_reg(/编号<\/td>[^<]*<td\s[^>]*>([^<]*)<\/td>/, 1)
+    data["name"] = exec_reg(/姓名<\/td>[^<]*<td\s[^>]*>([^<]*)<\/td>/, 1)
+    data["gender"] = get_input('gender')
+    data["usertype"] = get_input('user_type')
+    data["email"] = get_input('email')
+    data["phone"] = get_input('phone')
+    data["address"] = get_input('address')
+    data["title"] = get_input('title')
+    data["zip_code"] = get_input('zip_code')
+    data["work_place"] = get_input('work_place')
+    data["folk"] = get_input('folk')
 
 safeAuth = (data, callback) ->
   superagent
@@ -116,7 +135,7 @@ safeAuth = (data, callback) ->
     )
 
 getUsernameType = (username) ->
-  if /^20\d{8}$/g.test(username) then "ID" else "Email"
+  if /^\d{10}$/g.test(username) then "ID" else "Email"
 
 
 module.exports =
