@@ -31,3 +31,4 @@ node_modules
 
 modules/*.js
 modules/*.js.map
+/app.js*
