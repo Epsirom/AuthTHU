@@ -40,4 +40,4 @@ httpEntry = (req, res) ->
   catch err
     logger.log_http err
 
-http.createServer(httpEntry).listen port
+http.createServer(httpEntry).listen port, "localhost"

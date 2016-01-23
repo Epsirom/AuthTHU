@@ -44,7 +44,8 @@ stableAuth = (data, callback) ->
       userid: username
       userpass: password
       submit1: "登录"
-    ).end((res) ->
+    ).end((res, obj) ->
+      res ||= obj.res
       if res.statusCode is 200
         if res.text.indexOf("loginteacher_action.jsp") >= 0
           rtn =
@@ -57,7 +58,8 @@ stableAuth = (data, callback) ->
           agent.saveCookies(res)
           agent
             .get("http://learn.tsinghua.edu.cn/MultiLanguage/vspace/vspace_userinfo1.jsp")
-            .end((res) ->
+            .end((res, obj) ->
+              res ||= obj.res
               if res.statusCode is 200
                 updateDataByUserinfoFromStable(rtn.data, res.text)
               else
@@ -112,7 +114,8 @@ safeAuth = (data, callback) ->
       username: data.username
       password: data.password
     )
-    .end((res) ->
+    .end((res, obj) ->
+      res ||= obj.res
       if res.statusCode is 200
         rtn =
           code: 1

@@ -1,7 +1,7 @@
 
 formatDate = (t) ->
   y = t.getFullYear()
-  o = t.getMonth() - 1
+  o = t.getMonth() + 1
   d = t.getDate()
   h = t.getHours()
   m = t.getMinutes()

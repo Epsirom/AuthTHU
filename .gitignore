@@ -1,6 +1,10 @@
 # Logs
 logs
 *.log
+*.log.*
+log
+log/*
+*nohup.out*
 
 # Runtime data
 pids
@@ -31,3 +35,4 @@ node_modules
 
 modules/*.js
 modules/*.js.map
+/app.js*
