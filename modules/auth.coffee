@@ -92,12 +92,11 @@ stableAuth = (data, callback) ->
     get_input = (name) ->
       # for only chinese:
       # exec_reg(new RegExp("name=#{name}[^v]*value=\"([\u4e00-\u9fa5]*)", 1)
-      exec_reg(new RegExp("name=#{name}[^v]*value=\"([^\"]*)\""), 1)
+      exec_reg(new RegExp("name=['\"]?#{name}['\"]?[^v]*value=\"([^\"]*)\""), 1)
 
     data["ID"] = exec_reg(/编号<\/td>[^<]*<td\s[^>]*>([^<]*)<\/td>/, 1)
     data["name"] = exec_reg(/姓名<\/td>[^<]*<td\s[^>]*>([^<]*)<\/td>/, 1)
     data["zzmm"] = exec_reg(/政治面貌<\/td>[^<]*<td\s[^>]*>(?:<input\b[^>]*>)?([^<]*)<\/td>/, 1)
-    data["mz"] = exec_reg(/民族<\/td>[^<]*<td\s[^>]*>(?:<input\b[^>]*>)?([^<]*)<\/td>/, 1)
     data["gender"] = get_input('gender')
     data["usertype"] = get_input('user_type')
     #data["email"] = get_input('email')
@@ -106,7 +105,7 @@ stableAuth = (data, callback) ->
     # data["title"] = get_input('title')
     #data["zip_code"] = get_input('zip_code')
     #data["work_place"] = get_input('work_place')
-    # data["folk"] = get_input('folk')
+    data["folk"] = get_input('folk')
 
 safeAuth = (data, callback) ->
   superagent
